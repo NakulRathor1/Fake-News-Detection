@@ -186,7 +186,7 @@ header {{visibility:hidden;}}
     }}
 
     .hero h1 {{
-        font-size: 44px !important;
+        font-size: 43px !important;
         line-height: 1.08 !important;
         letter-spacing: -1px !important;
         text-align: left !important;
