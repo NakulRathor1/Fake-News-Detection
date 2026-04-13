@@ -79,7 +79,7 @@ header {{visibility:hidden;}}
 }}
 
 .hero h1 {{
-    font-size: clamp(48px, 8vw, 92px);
+    font-size: clamp(52px, 8vw, 92px);
     line-height:0.95;
     font-weight:800;
     letter-spacing:-2px;
