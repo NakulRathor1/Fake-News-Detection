@@ -129,8 +129,8 @@ header {{visibility:hidden;}}
 # --------------------------
 @st.cache_resource
 def load_model():
-    model = pickle.load(open("c:\\vs code\\4TH-SEM\\Macro_4th_Sem\\model.pkl", "rb"))
-    vectorizer = pickle.load(open("c:\\vs code\\4TH-SEM\\Macro_4th_Sem\\vectorizer.pkl", "rb"))
+    model = pickle.load(open("model.pkl", "rb"))
+    vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
     return model, vectorizer
 
 model, vectorizer = load_model()
