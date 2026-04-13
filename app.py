@@ -79,7 +79,7 @@ header {{visibility:hidden;}}
 }}
 
 .hero h1 {{
-    font-size:92px;
+    font-size: clamp(48px, 8vw, 92px);
     line-height:0.95;
     font-weight:800;
     letter-spacing:-2px;
@@ -87,7 +87,7 @@ header {{visibility:hidden;}}
 }}
 
 .hero p {{
-    font-size:24px;
+    font-size: clamp(16px, 2.5vw, 24px);
     color:{sub_text};
     max-width:700px;
 }}
@@ -98,7 +98,7 @@ header {{visibility:hidden;}}
     border:1px solid {border_color} !important;
     border-radius:18px;
     padding:18px;
-    font-size:20px;
+    font-size: clamp(16px, 2.5vw, 20px);
 }}
 
 .stTextArea textarea::placeholder {{
@@ -107,19 +107,111 @@ header {{visibility:hidden;}}
 }}
 
 .stButton button {{
-    background: {button_gradient};
-    color:white;
-    font-size:18px;
-    font-weight:700;
-    border:none;
-    border-radius:999px;
-    padding:14px 22px;
-    transition: all 0.35s ease;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+        135deg,
+        #0f766e 0%,
+        #155e75 45%,
+        #1e3a8a 100%
+    );
+    color: #ffffff;
+    font-size: clamp(16px, 2.5vw, 18px);
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 999px;
+    padding: 15px 24px;
+    transition: all 0.28s ease;
+    box-shadow:
+        0 6px 16px rgba(30,58,138,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
 }}
 
 .stButton button:hover {{
-    transform: translateY(-2px) scale(1.02);
+    transform: translateY(-2px);
+    box-shadow:
+        0 10px 20px rgba(15,118,110,0.22),
+        0 4px 10px rgba(30,58,138,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.14);
+    filter: brightness(1.15);
+}}
+
+.stButton button:active {{
+    transform: translateY(0px) scale(0.99);
+}}
+
+/* --------------------------
+   MOBILE RESPONSIVE (FIXED)
+--------------------------- */
+@media (max-width: 768px) {{
+
+    .block-container {{
+        padding-left: 0.9rem !important;
+        padding-right: 0.9rem !important;
+        max-width: 100% !important;
+    }}
+
+    /* THEME TOGGLE RIGHT */
+    .stButton {{
+        display: flex;
+        justify-content: flex-end;
+    }}
+
+    /* MOBILE NAVBAR */
+    .navbar {{
+        display: block !important;
+        padding: 16px 18px !important;
+        border-radius: 18px !important;
+        margin-bottom: 24px !important;
+    }}
+
+    .navbar div:first-child {{
+        font-size: 28px !important;
+        font-weight: 800 !important;
+        margin-bottom: 6px !important;
+    }}
+
+    .navbar div:last-child {{
+        font-size: 15px !important;
+        color: {sub_text} !important;
+        line-height: 1.5 !important;
+    }}
+
+    /* HERO */
+    .hero {{
+        text-align: left !important;
+    }}
+
+    .hero h1 {{
+        font-size: 49px !important;
+        line-height: 1.08 !important;
+        letter-spacing: -1px !important;
+        text-align: left !important;
+    }}
+
+    .hero p {{
+        font-size: 16px !important;
+        line-height: 1.7 !important;
+        text-align: left !important;
+        margin-top: 10px !important;
+    }}
+
+    /* INPUT */
+    .stTextArea textarea {{
+        min-height: 145px !important;
+        border-radius: 18px !important;
+        padding: 16px !important;
+    }}
+
+    /* BUTTON */
+    .stButton button {{
+        width: 100% !important;
+        border-radius: 18px !important;
+        padding: 14px 18px !important;
+    }}
 }}
 </style>
 """, unsafe_allow_html=True)
@@ -173,9 +265,12 @@ if analyze and user_input.strip():
     cleaned = re.sub(r'[^a-zA-Z\s]', '', user_input.lower())
     vector = vectorizer.transform([cleaned])
 
-    probs = model.predict_proba(vector)[0]
-    fake_prob = probs[0] * 100
-    real_prob = probs[1] * 100
+    score = model.decision_function(vector)[0]
+
+    import math
+    real_prob = 1 / (1 + math.exp(-score))
+    real_prob *= 100
+    fake_prob = 100 - real_prob
 
     # Result Panel
     st.markdown(f"""
